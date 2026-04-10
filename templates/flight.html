@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<!--
+  flight.html — seat availability detail page (Route 3)
+
+  Flask passed these variables from app.py:
+    flight       — a dict with all flight/route info
+    capacity     — total seats on the plane (from Aircraft table)
+    booked_seats — how many seats are already taken (COUNT from Booking table)
+    available    — capacity - booked_seats (calculated in Python)
+    error        — only set if the flight wasn't found in the DB
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flight Details</title>
+  <style>
+    body {
+      font-family: Garamond, serif;
+      max-width: 620px;
+      margin: 60px auto;
+      padding: 0 20px;
+      background: #FDFBD4;
+      color: #333;
+    }
+    h1 { color: #1a1a2e; }
+    .card {
+      background: white;
+      border-radius: 6px;
+      padding: 24px 28px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      margin-top: 20px;
+    }
+    .card h2 { margin-top: 0; color: #16213e; }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .label { color: #777; }
+    .value { font-weight: bold; }
+    .seats-section {
+      margin-top: 24px;
+      background: white;
+      border-radius: 6px;
+      padding: 24px 28px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .seats-section h2 { margin-top: 0; color: #16213e; }
+    .big-number {
+      font-size: 48px;
+      font-weight: bold;
+      color: #0f3460;
+    }
+    .seats-breakdown { color: #666; margin-top: 8px; }
+    /* Color the available count red if no seats left */
+    .full { color: #c0392b; }
+    .error {
+      background: #ffe0e0;
+      border: 1px solid #f00;
+      padding: 14px;
+      border-radius: 4px;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #0f3460;
+      text-decoration: none;
+    }
+    .back-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="javascript:history.back()">← Back to Results</a>
+
+  <h1>✈ Flight Details</h1>
+
+  <!-- Show an error message if the flight wasn't found -->
+  {% if error %}
+    <div class="error">{{ error }}</div>
+
+  {% else %}
+
+    <!-- Flight information card -->
+    <div class="card">
+      <h2>
+        {{ flight.flight_number }} —
+        {{ flight.origin_code }} → {{ flight.dest_code }}
+      </h2>
+
+      <div class="info-row">
+        <span class="label">Airline</span>
+        <span class="value">{{ flight.airline_name }}</span>
+      </div>
+
+      <div class="info-row">
+        <span class="label">Departure Date</span>
+        <span class="value">{{ flight.departure_date.strftime('%A, %B %d, %Y') }}</span>
+      </div>
+
+      <div class="info-row">
+        <span class="label">Departure Time (GMT)</span>
+        <span class="value">
+          {{ flight.departure_time }} GMT
+        </span>
+      </div>
+
+      <div class="info-row">
+        <span class="label">Duration</span>
+        <span class="value">{{ flight.duration }}</span>
+      </div>
+
+      <div class="info-row">
+        <span class="label">Aircraft Type</span>
+        <span class="value">{{ flight.plane_type }}</span>
+      </div>
+    </div>
+
+    <!-- Seat availability card -->
+    <div class="seats-section">
+      <h2>Seat Availability</h2>
+
+      <!--
+        Show the available count in red if no seats are left (available == 0).
+        Jinja2 supports inline conditionals: value if condition else other_value
+      -->
+      <div class="big-number {{ 'full' if available == 0 else '' }}">
+        {{ available }}
+      </div>
+
+      <div>seat{{ 's' if available != 1 else '' }} available</div>
+
+      <div class="seats-breakdown">
+        {{ booked_seats }} booked &nbsp;/&nbsp; {{ capacity }} total capacity
+      </div>
+
+      {% if available == 0 %}
+        <p style="color:#c0392b; font-weight:bold;">This flight is fully booked.</p>
+      {% endif %}
+    </div>
+
+  {% endif %}
+
+</body>
+</html>

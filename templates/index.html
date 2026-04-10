@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<!--
+  index.html — the search form (Route 1)
+
+  Jinja2 templating basics used here:
+    {{ variable }}        — outputs a value passed from Flask
+    {% if condition %}    — conditional block
+    {% endif %}           — ends a conditional block
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flight Search</title>
+  <style>
+
+    body {
+      font-family: Garamond, serif;
+      max-width: 600px;
+      margin: 60px auto;
+      padding: 0 20px;
+      background: #FDFBD4;
+      color: #333;
+    }
+    h1 { color: #1a1a2e; }
+    label { display: block; margin-top: 14px; font-weight: bold; }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 24px;
+      background: #16213e;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover { background: #0f3460; }
+    .error {
+      background: #ffe0e0;
+      border: 1px solid #f00;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>✈ Flight Search</h1>
+
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% endif %}
+
+  <!--
+    The form uses method="GET" so the values appear in the URL.
+    action="/flights" tells the browser to send the form to Route 2.
+    Flask reads them with request.args in app.py.
+  -->
+  <form method="GET" action="/flights">
+
+    <label for="origin">Origin Airport Code</label>
+    <input type="text" id="origin" name="origin"
+           placeholder="e.g. JFK" maxlength="3" required>
+
+    <label for="destination">Destination Airport Code</label>
+    <input type="text" id="destination" name="destination"
+           placeholder="e.g. LAX" maxlength="3" required>
+
+    <label for="start_date">From Date</label>
+    <input type="date" id="start_date" name="start_date" required>
+
+    <label for="end_date">To Date</label>
+    <input type="date" id="end_date" name="end_date" required>
+
+    <button type="submit">Search Flights</button>
+
+  </form>
+
+</body>
+</html>

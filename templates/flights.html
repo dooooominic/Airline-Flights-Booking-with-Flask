@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+{# flights.html — search results page (Route 2)
+   Flask passed: flights, origin, destination, start_date, end_date #}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flight Results</title>
+  <style>
+    body {
+      font-family: Garamond, serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background: #FDFBD4;
+      color: #333;
+    }
+    h1 { color: #1a1a2e; }
+    .subtitle { color: #666; margin-bottom: 24px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    th {
+      background: #16213e;
+      color: white;
+      padding: 12px 14px;
+      text-align: left;
+    }
+    td { padding: 11px 14px; border-bottom: 1px solid #eee; }
+    tr:last-child td { border-bottom: none; }
+    /* Alternating row colors to make it easier to read */
+    tr:nth-child(even) td { background: #f9f9f9; }
+    a.flight-link {
+      color: #0f3460;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    a.flight-link:hover { text-decoration: underline; }
+    .no-results {
+      background: white;
+      padding: 24px;
+      border-radius: 6px;
+      text-align: center;
+      color: #777;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #0f3460;
+      text-decoration: none;
+    }
+    .back-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- Link back to the search form -->
+  <a class="back-link" href="/">← Back to Search</a>
+
+  <h1>✈ Available Flights</h1>
+  <p class="subtitle">
+    {{ origin }} → {{ destination }} &nbsp;|&nbsp;
+    {{ start_date }} to {{ end_date }}
+  </p>
+
+  <!--
+    Check if the flights list is empty.
+    In Jinja2, an empty list is "falsy" just like in Python.
+  -->
+  {% if flights %}
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Flight Number</th>
+          <th>Airline</th>
+          <th>Departure Date</th>
+          <th>Origin</th>
+          <th>Destination</th>
+          <th>Departure Time (GMT)</th>
+          <th>Duration</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!--
+          Jinja2 for-loop: "flight" is one row from the DB result list.
+          Each flight is a dict, so we access columns by name: flight["flight_number"].
+          In Jinja2 templates you can use dot notation too: flight.flight_number
+        -->
+        {% for flight in flights %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ flight.flight_number }}</td>
+          <td>{{ flight.airline_name }}</td>
+
+          <!--
+            flight.departure_date comes back as a Python date object.
+            The strftime filter formats it as a readable string.
+          -->
+          <td>{{ flight.departure_date.strftime('%Y-%m-%d') }}</td>
+
+          <td>{{ flight.origin_code }}</td>
+          <td>{{ flight.dest_code }}</td>
+
+          <td>{{ flight.departure_time }}</td>
+
+          <td>{{ flight.duration }}</td>
+
+          <!--
+            This link goes to Route 3. We build the URL with the flight number
+            and departure date embedded in it, e.g.:
+              /flight/AA101/2024-01-15
+            Clicking this link is how the user asks to see seat availability.
+          -->
+          <td>
+            <a class="flight-link"
+               href="/flight/{{ flight.flight_number }}/{{ flight.departure_date.strftime('%Y-%m-%d') }}">
+              View Seats
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+
+      </tbody>
+    </table>
+
+  {% else %}
+
+    <!-- Shown when the query returned zero rows -->
+    <div class="no-results">
+      No flights found for {{ origin }} → {{ destination }}
+      between {{ start_date }} and {{ end_date }}.
+    </div>
+
+  {% endif %}
+
+</body>
+</html>
