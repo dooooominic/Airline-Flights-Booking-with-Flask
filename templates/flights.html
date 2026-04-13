@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{# flights.html — search results page (Route 2)
+{# flights.html — search results page
    Flask passed: flights, origin, destination, start_date, end_date #}
 <html lang="en">
 <head>
@@ -59,7 +59,7 @@
 </head>
 <body>
 
-  <!-- Link back to the search form -->
+
   <a class="back-link" href="/">← Back to Search</a>
 
   <h1>✈ Available Flights</h1>
@@ -68,10 +68,6 @@
     {{ start_date }} to {{ end_date }}
   </p>
 
-  <!--
-    Check if the flights list is empty.
-    In Jinja2, an empty list is "falsy" just like in Python.
-  -->
   {% if flights %}
 
     <table>
@@ -90,36 +86,17 @@
       </thead>
       <tbody>
 
-        <!--
-          Jinja2 for-loop: "flight" is one row from the DB result list.
-          Each flight is a dict, so we access columns by name: flight["flight_number"].
-          In Jinja2 templates you can use dot notation too: flight.flight_number
-        -->
+
         {% for flight in flights %}
         <tr>
           <td>{{ loop.index }}</td>
           <td>{{ flight.flight_number }}</td>
           <td>{{ flight.airline_name }}</td>
-
-          <!--
-            flight.departure_date comes back as a Python date object.
-            The strftime filter formats it as a readable string.
-          -->
           <td>{{ flight.departure_date.strftime('%Y-%m-%d') }}</td>
-
           <td>{{ flight.origin_code }}</td>
           <td>{{ flight.dest_code }}</td>
-
           <td>{{ flight.departure_time }}</td>
-
           <td>{{ flight.duration }}</td>
-
-          <!--
-            This link goes to Route 3. We build the URL with the flight number
-            and departure date embedded in it, e.g.:
-              /flight/AA101/2024-01-15
-            Clicking this link is how the user asks to see seat availability.
-          -->
           <td>
             <a class="flight-link"
                href="/flight/{{ flight.flight_number }}/{{ flight.departure_date.strftime('%Y-%m-%d') }}">
@@ -133,8 +110,6 @@
     </table>
 
   {% else %}
-
-    <!-- Shown when the query returned zero rows -->
     <div class="no-results">
       No flights found for {{ origin }} → {{ destination }}
       between {{ start_date }} and {{ end_date }}.

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <!--
-  flight.html — seat availability detail page (Route 3)
-
+  flight.html — seat availability detail page
   Flask passed these variables from app.py:
     flight       — a dict with all flight/route info
     capacity     — total seats on the plane (from Aircraft table)
@@ -79,13 +78,10 @@
 
   <h1>✈ Flight Details</h1>
 
-  <!-- Show an error message if the flight wasn't found -->
   {% if error %}
     <div class="error">{{ error }}</div>
 
   {% else %}
-
-    <!-- Flight information card -->
     <div class="card">
       <h2>
         {{ flight.flight_number }} —
@@ -125,8 +121,7 @@
       <h2>Seat Availability</h2>
 
       <!--
-        Show the available count in red if no seats are left (available == 0).
-        Jinja2 supports inline conditionals: value if condition else other_value
+        Show the available count in red if no seats are left.
       -->
       <div class="big-number {{ 'full' if available == 0 else '' }}">
         {{ available }}

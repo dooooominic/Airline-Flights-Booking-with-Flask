@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <!--
-  index.html — the search form (Route 1)
-
-  Jinja2 templating basics used here:
-    {{ variable }}        — outputs a value passed from Flask
-    {% if condition %}    — conditional block
-    {% endif %}           — ends a conditional block
+  index.html — the search form
 -->
 <html lang="en">
 <head>
@@ -60,11 +55,6 @@
     <div class="error">{{ error }}</div>
   {% endif %}
 
-  <!--
-    The form uses method="GET" so the values appear in the URL.
-    action="/flights" tells the browser to send the form to Route 2.
-    Flask reads them with request.args in app.py.
-  -->
   <form method="GET" action="/flights">
 
     <label for="origin">Origin Airport Code</label>
